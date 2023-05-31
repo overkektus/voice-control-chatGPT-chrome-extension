@@ -5,7 +5,14 @@ import refreshOnUpdate from "virtual:reload-on-update-in-view";
 refreshOnUpdate("pages/content");
 
 const root = document.createElement("div");
-root.id = "chrome-extension-boilerplate-react-vite-content-view-root";
-document.body.append(root);
+
+const linkFont = document.createElement("link");
+linkFont.rel = "stylesheet";
+linkFont.href =
+  "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
+
+document.querySelector("head").append(linkFont);
+
+document.querySelector("form").after(root);
 
 createRoot(root).render(<App />);
