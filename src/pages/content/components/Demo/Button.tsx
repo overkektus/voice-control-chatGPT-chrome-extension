@@ -1,11 +1,16 @@
-import "regenerator-runtime/runtime";
 import Button, { ButtonProps } from "@mui/material/Button";
 import MicIcon from "@mui/icons-material/Mic";
 import { styled } from "@mui/material/styles";
 
-export default function MicButton() {
+interface MicButtonProps {
+  text: string;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export default function MicButton({ text, onClick }: MicButtonProps) {
   return (
-    <StyledButton variant="contained">
+    <StyledButton variant="contained" onClick={onClick}>
+      {text}
       <MicIcon />
     </StyledButton>
   );
@@ -13,6 +18,5 @@ export default function MicButton() {
 
 const StyledButton = styled(Button)<ButtonProps>(() => ({
   width: "100%",
-  height: "3rem",
   animation: "ease-in",
 }));
