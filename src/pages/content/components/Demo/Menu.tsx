@@ -8,7 +8,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 export default function Menu() {
   return (
-    <Paper sx={{ padding: "0.5rem" }}>
+    <Paper sx={{ padding: "0.5rem", height: "fit-content" }}>
       <Stack direction="row" spacing={2}>
         <LanguageSelect />
         <ButtonGroup
