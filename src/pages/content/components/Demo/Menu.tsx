@@ -6,7 +6,11 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-export default function Menu() {
+interface MenuProps {
+  handleOpenSettingsModal: () => void;
+}
+
+export default function Menu({ handleOpenSettingsModal }: MenuProps) {
   return (
     <Paper sx={{ padding: "0.5rem", height: "fit-content" }}>
       <Stack direction="row" spacing={2}>
@@ -16,13 +20,13 @@ export default function Menu() {
           aria-label="outlined primary button group"
           size="small"
         >
-          <IconButton aria-label="delete">
+          <IconButton>
             <SkipNextIcon />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton>
             <VolumeUpIcon />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton onClick={handleOpenSettingsModal}>
             <SettingsIcon />
           </IconButton>
         </ButtonGroup>

@@ -1,16 +1,21 @@
 import "regenerator-runtime/runtime";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import Button from "./Button";
 import Menu from "./Menu";
+import SettingsModal from "./Settings/SettingsModal";
 
 export default function App() {
   const textarea = useRef(document.querySelector("textarea"));
   const sendButton: MutableRefObject<HTMLButtonElement> = useRef(
     document.querySelector("button[disabled]")
   );
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const {
     transcript,
@@ -79,7 +84,8 @@ export default function App() {
   return (
     <div className="content-view flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
       <Button text={interimTranscript} onClick={handleStartStopRecognition} />
-      <Menu />
+      <Menu handleOpenSettingsModal={handleOpen} />
+      <SettingsModal isOpen={open} handleClose={handleClose} />
     </div>
   );
 }
