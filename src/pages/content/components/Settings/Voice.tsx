@@ -18,11 +18,17 @@ export default function Voice() {
 
   return (
     <>
-      <Typography fontSize="1.2rem" variant="h3">
+      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         Voice preference
       </Typography>
-      <Box sx={{ width: 120 }}>
-        <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <Box
+        sx={{
+          width: "fit-content",
+          backgroundColor: "white",
+          borderRadius: "10px",
+        }}
+      >
+        <FormControl sx={{ m: 1, minWidth: 200 }}>
           <InputLabel id="demo-simple-select-autowidth-label">Age</InputLabel>
           <Select
             labelId="demo-simple-select-autowidth-label"

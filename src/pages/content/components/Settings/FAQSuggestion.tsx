@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 export default function FAQSuggestion() {
   return (
     <>
-      <Typography fontSize="1.2rem" variant="h3">
+      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         Voice preference
       </Typography>
       <StyledTypography>

@@ -11,7 +11,7 @@ export default function Loud() {
 
   return (
     <>
-      <Typography fontSize="1.2rem" variant="h3">
+      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         Read aloud speed: {value}
       </Typography>
       <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
