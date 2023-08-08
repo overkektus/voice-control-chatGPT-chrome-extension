@@ -19,12 +19,6 @@ export const useDynamicContentObserver = (
         if (mutation.type === "characterData") {
           setTextContent(mutation.target.textContent);
         }
-        if (mutation.type === "attributes") {
-          console.log(mutation);
-        }
-        if (mutation.type === "childList") {
-          console.log(mutation);
-        }
       }
     });
 

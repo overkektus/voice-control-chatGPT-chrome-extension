@@ -10,6 +10,10 @@ import useRecognition from "@src/hooks/useRecognition";
 import useTranscriptEffect from "@src/hooks/useTranscriptEffect";
 import { useDynamicContentObserver } from "@src/hooks/useNewElements";
 import { useTextToSpeech } from "@src/hooks/useTextToSpeech";
+import {
+  calculateStringDifference,
+  extractCompleteSentences,
+} from "@src/utils";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -32,11 +36,11 @@ export default function App() {
     "div.bg-gray-50.dark\\:bg-\\[\\#444654\\]:has(p)"
   );
 
-  const [t, setT] = useState<string>("");
+  const [gptAnswerText, setGPTAnswerText] = useState<string>("");
   const [sentences, setSentences] = useState<string[]>([]);
   const [sentencesSpeaked, setSentencesSpeaked] = useState<string[]>([]);
 
-  const { speak } = useTextToSpeech();
+  const { addToQueue } = useTextToSpeech();
 
   useEffect(() => {
     const newSentencesToSpeak = sentences.filter(
@@ -44,17 +48,17 @@ export default function App() {
     );
 
     if (newSentencesToSpeak.length > 0) {
-      newSentencesToSpeak.map((sentence) => speak(sentence));
       setSentencesSpeaked((prevSentences) => [
         ...prevSentences,
         ...newSentencesToSpeak,
       ]);
+      newSentencesToSpeak.map((sentence) => addToQueue(sentence));
     }
   }, [sentences, sentencesSpeaked]);
 
   useEffect(() => {
-    const diff = calculateStringDifference(t, textContent);
-    setT(t + diff);
+    const diff = calculateStringDifference(gptAnswerText, textContent);
+    setGPTAnswerText(gptAnswerText + diff);
     const newSentences = extractCompleteSentences(textContent);
     setSentences((prevSentences) => [...prevSentences, ...newSentences]);
   }, [textContent]);
@@ -82,19 +86,3 @@ export default function App() {
     </div>
   );
 }
-
-function calculateStringDifference(first, second) {
-  const index = second.indexOf(first);
-  if (index !== -1) {
-    return second.substring(index + first.length);
-  }
-  return second;
-}
-
-const extractCompleteSentences = (text: string) => {
-  const sentences = text.match(/[^.!?]*[.!?]/g); // Split into sentences using regex
-  if (sentences) {
-    return sentences.map((sentence) => sentence.trim());
-  }
-  return [];
-};
