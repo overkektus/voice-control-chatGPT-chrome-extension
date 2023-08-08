@@ -14,6 +14,7 @@ import {
   calculateStringDifference,
   extractCompleteSentences,
 } from "@src/utils";
+import useKeyPress from "@src/hooks/useKeyPress";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -40,7 +41,7 @@ export default function App() {
   const [sentences, setSentences] = useState<string[]>([]);
   const [sentencesSpeaked, setSentencesSpeaked] = useState<string[]>([]);
 
-  const { addToQueue } = useTextToSpeech();
+  const { addToQueue, stopSpeak } = useTextToSpeech();
 
   useEffect(() => {
     const newSentencesToSpeak = sentences.filter(
@@ -62,6 +63,14 @@ export default function App() {
     const newSentences = extractCompleteSentences(textContent);
     setSentences((prevSentences) => [...prevSentences, ...newSentences]);
   }, [textContent]);
+
+  useKeyPress("s", stopSpeak);
+  // TODO: stop and copy the transcription to the ChatGPT input field without submitting
+  // useKeyPress("e", )
+  // TODO: cancel transcription
+  // useKeyPress("q", )
+  // TODO: start/stop transcription
+  // useKeyPress("space", )
 
   const handleStartStopRecognition = (
     event: React.MouseEvent<HTMLButtonElement>
