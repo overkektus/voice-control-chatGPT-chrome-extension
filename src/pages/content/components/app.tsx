@@ -6,7 +6,7 @@ import SpeechRecognition, {
 import Button from "./Button";
 import Menu from "./Menu";
 import SettingsModal from "./Settings/SettingsModal";
-import useTranscriptEffect from "@src/hooks/useSendTranscript";
+import useSendTranscript from "@src/hooks/useSendTranscript";
 import { useDynamicContentObserver } from "@src/hooks/useNewElements";
 import { useTextToSpeech } from "@src/hooks/useTextToSpeech";
 import {
@@ -62,10 +62,19 @@ export default function App() {
   } = useSpeechRecognition();
 
   const [isListenFinish, setIsListenFinish] = useState(false);
-  useTranscriptEffect(isListenFinish, transcript, resetTranscript);
+  const [isTranscriptForSend, setIsTranscriptForSend] = useState(false);
+  useSendTranscript(
+    isListenFinish,
+    isTranscriptForSend,
+    transcript,
+    resetTranscript
+  );
 
   const startListening = () => {
+    console.log("start listening");
+    resetTranscript();
     setIsListenFinish(false);
+    setIsTranscriptForSend(true);
     SpeechRecognition.startListening({
       language: "en-US",
       continuous: true,
@@ -73,9 +82,10 @@ export default function App() {
     });
   };
 
-  const stopListening = () => {
+  const stopListening = async () => {
+    console.log("stop listening");
     setIsListenFinish(true);
-    SpeechRecognition.stopListening();
+    await SpeechRecognition.stopListening();
   };
 
   const cancelListening = async () => {
@@ -83,9 +93,14 @@ export default function App() {
     resetTranscript();
   };
 
+  const stopAndPasteTranscription = () => {
+    if (!listening) return;
+    setIsTranscriptForSend(false);
+    stopListening();
+  };
+
   useKeyPress("KeyS", stopSpeak);
-  // TODO: stop and copy the transcription to the ChatGPT input field without submitting
-  // useKeyPress("KeyE", )
+  useKeyPress("KeyE", stopAndPasteTranscription);
   useKeyPress("KeyQ", cancelListening);
   useKeyHold("Space", startListening, stopListening, 500);
 
@@ -96,7 +111,7 @@ export default function App() {
     if (!listening) {
       startListening();
     } else {
-      SpeechRecognition.stopListening();
+      stopListening();
     }
   };
 

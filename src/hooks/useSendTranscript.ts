@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 
-export default function useSendTranscript(
+function useSendTranscript(
   isListenFinish: boolean,
+  isTranscriptForSend: boolean,
   transcript: string,
   resetTranscript: () => void
 ) {
@@ -14,7 +15,9 @@ export default function useSendTranscript(
     if (!isListenFinish) return;
     textarea.current.value = transcript;
     textarea.current.dispatchEvent(new Event("input", { bubbles: true }));
+    if (!isTranscriptForSend) return;
     sendButton.current.click();
-    resetTranscript();
   }, [isListenFinish, transcript, resetTranscript]);
 }
+
+export default useSendTranscript;
