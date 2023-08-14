@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
-function useKeyPress(key: string, callback: () => void) {
+function useKeyPress(code: string, callback: () => void) {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === key) {
+      if (event.code === code) {
         // event.preventDefault();
         callback();
       }
@@ -14,7 +14,7 @@ function useKeyPress(key: string, callback: () => void) {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [key, callback]);
+  }, [code, callback]);
 }
 
 export default useKeyPress;
