@@ -51,10 +51,7 @@ export const useDynamicContentObserver = (
               node.parentElement === targetParentNode &&
               node.matches(targetChildSelector)
             ) {
-              const div = node.querySelector(
-                "div.markdown.prose.w-full.break-words.dark\\:prose-invert.light"
-              );
-              setElement(div);
+              setElement(node);
             }
           });
         }
