@@ -6,7 +6,7 @@ import SpeechRecognition, {
 import Button from "./Button";
 import Menu from "./Menu";
 import SettingsModal from "./Settings/SettingsModal";
-import useTranscriptEffect from "@src/hooks/useTranscriptEffect";
+import useTranscriptEffect from "@src/hooks/useSendTranscript";
 import { useDynamicContentObserver } from "@src/hooks/useNewElements";
 import { useTextToSpeech } from "@src/hooks/useTextToSpeech";
 import {
@@ -61,9 +61,11 @@ export default function App() {
     // browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
-  useTranscriptEffect(listening, transcript, resetTranscript);
+  const [isListenFinish, setIsListenFinish] = useState(false);
+  useTranscriptEffect(isListenFinish, transcript, resetTranscript);
 
   const startListening = () => {
+    setIsListenFinish(false);
     SpeechRecognition.startListening({
       language: "en-US",
       continuous: true,
@@ -71,22 +73,21 @@ export default function App() {
     });
   };
 
-  // const stopListening = async () => {
-  //   resetTranscript();
-  //   await SpeechRecognition.stopListening();
-  // };
+  const stopListening = () => {
+    setIsListenFinish(true);
+    SpeechRecognition.stopListening();
+  };
+
+  const cancelListening = async () => {
+    await SpeechRecognition.abortListening();
+    resetTranscript();
+  };
 
   useKeyPress("KeyS", stopSpeak);
   // TODO: stop and copy the transcription to the ChatGPT input field without submitting
-  // useKeyPress("e", )
-  // TODO: cancel transcription
-  // useKeyPress("KeyQ", stopListening);
-  useKeyHold(
-    "Space",
-    startListening,
-    () => SpeechRecognition.stopListening(),
-    500
-  );
+  // useKeyPress("KeyE", )
+  useKeyPress("KeyQ", cancelListening);
+  useKeyHold("Space", startListening, stopListening, 500);
 
   const handleStartButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
