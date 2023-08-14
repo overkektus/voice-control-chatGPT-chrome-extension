@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -15,6 +15,8 @@ import {
 } from "@src/utils";
 import useKeyPress from "@src/hooks/useKeyPress";
 import useKeyHold from "@src/hooks/useKeyHold";
+import { SettingsContext } from "./settingsConext";
+import React from "react";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -30,7 +32,12 @@ export default function App() {
   const [sentences, setSentences] = useState<string[]>([]);
   const [sentencesSpeaked, setSentencesSpeaked] = useState<string[]>([]);
 
-  const { addToQueue, stopSpeak } = useTextToSpeech();
+  const { addToQueue, stopSpeak, setMuteState } = useTextToSpeech();
+  const { isSpeechOn } = useContext(SettingsContext);
+
+  useEffect(() => {
+    setMuteState(!isSpeechOn);
+  }, [isSpeechOn]);
 
   useEffect(() => {
     const newSentencesToSpeak = sentences.filter(

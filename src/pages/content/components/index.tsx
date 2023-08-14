@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "@src/pages/content/components/app";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
+import SettingsContextProvider from "./settingsConext";
 
 refreshOnUpdate("pages/content");
 
@@ -15,4 +16,8 @@ document.querySelector("head").append(linkFont);
 
 document.querySelector("form").after(root);
 
-createRoot(root).render(<App />);
+createRoot(root).render(
+  <SettingsContextProvider>
+    <App />
+  </SettingsContextProvider>
+);
