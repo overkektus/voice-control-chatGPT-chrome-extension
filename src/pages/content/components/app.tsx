@@ -6,7 +6,6 @@ import SpeechRecognition, {
 import Button from "./Button";
 import Menu from "./Menu";
 import SettingsModal from "./Settings/SettingsModal";
-import useRecognition from "@src/hooks/useRecognition";
 import useTranscriptEffect from "@src/hooks/useTranscriptEffect";
 import { useDynamicContentObserver } from "@src/hooks/useNewElements";
 import { useTextToSpeech } from "@src/hooks/useTextToSpeech";
@@ -15,26 +14,16 @@ import {
   extractCompleteSentences,
 } from "@src/utils";
 import useKeyPress from "@src/hooks/useKeyPress";
+import useKeyHold from "@src/hooks/useKeyHold";
 
 export default function App() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-    interimTranscript,
-  } = useSpeechRecognition();
-
-  useRecognition(listening);
-  useTranscriptEffect(listening, transcript, resetTranscript);
-
   const { textContent } = useDynamicContentObserver(
     ".flex.flex-col.text-sm.dark\\:bg-gray-800",
-    "div.bg-gray-50.dark\\:bg-\\[\\#444654\\]:has(p)"
+    ".group.w-full.text-token-text-primary.border-b.border-black\\/10.dark\\:border-gray-900\\/50.bg-gray-50.dark\\:bg-\\[\\#444654\\]"
   );
 
   const [gptAnswerText, setGPTAnswerText] = useState<string>("");
@@ -64,24 +53,47 @@ export default function App() {
     setSentences((prevSentences) => [...prevSentences, ...newSentences]);
   }, [textContent]);
 
-  useKeyPress("s", stopSpeak);
+  const {
+    listening,
+    interimTranscript,
+    transcript,
+    resetTranscript,
+    // browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
+  useTranscriptEffect(listening, transcript, resetTranscript);
+
+  const startListening = () => {
+    SpeechRecognition.startListening({
+      language: "en-US",
+      continuous: true,
+      interimResults: true,
+    });
+  };
+
+  // const stopListening = async () => {
+  //   resetTranscript();
+  //   await SpeechRecognition.stopListening();
+  // };
+
+  useKeyPress("KeyS", stopSpeak);
   // TODO: stop and copy the transcription to the ChatGPT input field without submitting
   // useKeyPress("e", )
   // TODO: cancel transcription
-  // useKeyPress("q", )
-  // TODO: start/stop transcription
-  // useKeyPress("space", )
+  // useKeyPress("KeyQ", stopListening);
+  useKeyHold(
+    "Space",
+    startListening,
+    () => SpeechRecognition.stopListening(),
+    500
+  );
 
-  const handleStartStopRecognition = (
+  const handleStartButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
   ): void => {
     event.preventDefault();
     if (!listening) {
-      SpeechRecognition.startListening({
-        language: "en-US",
-        continuous: true,
-        interimResults: true,
-      });
+      startListening();
     } else {
       SpeechRecognition.stopListening();
     }
@@ -89,7 +101,7 @@ export default function App() {
 
   return (
     <div className="content-view flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-      <Button text={interimTranscript} onClick={handleStartStopRecognition} />
+      <Button text={interimTranscript} onClick={handleStartButtonClick} />
       <Menu handleOpenSettingsModal={handleOpen} />
       <SettingsModal isOpen={open} handleClose={handleClose} />
     </div>
