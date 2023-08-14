@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useKeyHold(
   code: string,
@@ -6,22 +6,30 @@ function useKeyHold(
   onKeyUp: () => void,
   requiredHoldTime: number
 ) {
-  useEffect(() => {
-    let isKeyDown = false;
-    let holdTimeout;
+  const [isKeyDown, setIsKeyDown] = useState(false);
+  const [holdTimeout, setHoldTimeout] = useState(null);
 
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === code && !isKeyDown) {
-        isKeyDown = true;
-        holdTimeout = setTimeout(onKeyDown, requiredHoldTime);
+        setIsKeyDown(true);
+        setHoldTimeout(
+          setTimeout(() => {
+            onKeyDown();
+            setHoldTimeout(null);
+          }, requiredHoldTime)
+        );
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === code) {
-        isKeyDown = false;
+      if (event.code === code && isKeyDown) {
+        setIsKeyDown(false);
         clearTimeout(holdTimeout);
+        // if (holdTimeout !== null) {
         onKeyUp();
+        // }
+        setHoldTimeout(null);
       }
     };
 
@@ -33,7 +41,7 @@ function useKeyHold(
       window.removeEventListener("keyup", handleKeyUp);
       clearTimeout(holdTimeout);
     };
-  }, [code, onKeyDown, onKeyUp, requiredHoldTime]);
+  }, [code, isKeyDown, onKeyDown, onKeyUp, requiredHoldTime, holdTimeout]);
 }
 
 export default useKeyHold;
