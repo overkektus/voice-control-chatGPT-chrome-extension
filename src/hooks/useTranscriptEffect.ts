@@ -11,6 +11,7 @@ export default function useTranscriptEffect(
   );
 
   useEffect(() => {
+    if (listening) return;
     textarea.current.value = transcript;
     textarea.current.dispatchEvent(new Event("input", { bubbles: true }));
     sendButton.current.click();
