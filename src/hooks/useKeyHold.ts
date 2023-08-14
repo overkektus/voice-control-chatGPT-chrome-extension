@@ -7,12 +7,14 @@ function useKeyHold(
   requiredHoldTime: number
 ) {
   const [isKeyDown, setIsKeyDown] = useState(false);
+  const [holdStartTime, setHoldStartTime] = useState(0);
   const [holdTimeout, setHoldTimeout] = useState(null);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === code && !isKeyDown) {
         setIsKeyDown(true);
+        setHoldStartTime(Date.now());
         setHoldTimeout(
           setTimeout(() => {
             onKeyDown();
@@ -26,9 +28,10 @@ function useKeyHold(
       if (event.code === code && isKeyDown) {
         setIsKeyDown(false);
         clearTimeout(holdTimeout);
-        // if (holdTimeout !== null) {
-        onKeyUp();
-        // }
+        const holdDuration = Date.now() - holdStartTime;
+        if (holdDuration >= requiredHoldTime) {
+          onKeyUp();
+        }
         setHoldTimeout(null);
       }
     };
@@ -41,7 +44,15 @@ function useKeyHold(
       window.removeEventListener("keyup", handleKeyUp);
       clearTimeout(holdTimeout);
     };
-  }, [code, isKeyDown, onKeyDown, onKeyUp, requiredHoldTime, holdTimeout]);
+  }, [
+    code,
+    isKeyDown,
+    onKeyDown,
+    onKeyUp,
+    requiredHoldTime,
+    holdStartTime,
+    holdTimeout,
+  ]);
 }
 
 export default useKeyHold;
