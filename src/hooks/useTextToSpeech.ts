@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 
-export const useTextToSpeech = () => {
+interface TextToSpeechHootProps {
+  voice: SpeechSynthesisVoice;
+  volume?: number;
+  rate?: number;
+}
+
+export const useTextToSpeech = ({
+  voice,
+  volume,
+  rate,
+}: TextToSpeechHootProps) => {
   const [queue, setQueue] = useState([]);
   const [speaking, setSpeaking] = useState(false);
   const [mute, setMute] = useState(false);
@@ -14,16 +24,11 @@ export const useTextToSpeech = () => {
 
     if (speaking && !mute) {
       const utterance = new SpeechSynthesisUtterance(queue[0]);
-      const availableVoices = speechSynthesis.getVoices();
-      const selectedVoice = availableVoices.find(
-        (voice) => voice.name === "Саманта"
-      );
-      if (selectedVoice) {
-        utterance.pitch = 1;
-        utterance.volume = 1;
-        utterance.rate = 1;
-        utterance.voice = selectedVoice;
-        utterance.lang = selectedVoice.lang;
+      if (voice) {
+        utterance.volume = volume;
+        utterance.rate = rate;
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
       }
       setQueue((prev) => prev.slice(1));
       speechSynthesis.speak(utterance);
