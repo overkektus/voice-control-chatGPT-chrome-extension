@@ -1,41 +1,37 @@
-import { useState } from "react";
+import { ChangeEvent, useContext } from "react";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-
-const langLocales = [
-  { name: "English(US)", tag: "en-US" },
-  { name: "German", tag: "de-DE" },
-  { name: "Russian", tag: "ru-RU" },
-];
+import NativeSelect from "@mui/material/NativeSelect";
+import { supportedLanguages } from "@src/constants/supportedLanguages";
+import { SettingsContext } from "./settingsConext";
 
 export default function BasicSelect() {
-  const [language, setLanguage] = useState<string>("");
+  const { language, setLanguage } = useContext(SettingsContext);
 
-  const handleChange = (event: SelectChangeEvent): void => {
-    setLanguage(event.target.value as string);
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedLanguage = supportedLanguages.find(
+      (language) => language.value === event.target.value
+    );
+    if (selectedLanguage) {
+      setLanguage(selectedLanguage);
+    }
   };
 
   return (
-    <Box sx={{ width: 120 }}>
+    <div className="flex items-center">
       <FormControl fullWidth size="small">
-        <InputLabel id="select-label">Language</InputLabel>
-        <Select
-          labelId="select-label"
+        <NativeSelect
           id="demo-simple-select"
-          value={language}
-          label="Language"
+          value={language.value}
           onChange={handleChange}
         >
-          {langLocales.map((lang) => (
-            <MenuItem key={lang.tag} value={lang.tag}>
-              {lang.name}
-            </MenuItem>
+          {supportedLanguages.map((language) => (
+            <option key={language.value} value={language.value}>
+              {language.label}
+            </option>
           ))}
-        </Select>
+        </NativeSelect>
       </FormControl>
-    </Box>
+    </div>
   );
 }

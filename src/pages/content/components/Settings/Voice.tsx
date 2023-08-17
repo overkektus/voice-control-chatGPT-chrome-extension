@@ -1,49 +1,45 @@
 import {
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   SelectChangeEvent,
   Typography,
   Box,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext } from "react";
+import { SettingsContext } from "../settingsConext";
 
 export default function Voice() {
-  const [age, setAge] = useState("");
+  const { availableVoices, voice, setVoice } = useContext(SettingsContext);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
+    const selectedVoice = availableVoices.find(
+      (voice) => voice.name === event.target.value
+    );
+    if (selectedVoice) {
+      setVoice(selectedVoice);
+    }
   };
 
   return (
     <>
       <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
-        Voice preference
+        Voice
       </Typography>
       <Box
         sx={{
-          width: "fit-content",
+          width: "100%",
           backgroundColor: "white",
           borderRadius: "10px",
         }}
       >
-        <FormControl sx={{ m: 1, minWidth: 200 }}>
-          <InputLabel id="demo-simple-select-autowidth-label">Age</InputLabel>
-          <Select
-            labelId="demo-simple-select-autowidth-label"
-            id="demo-simple-select-autowidth"
-            value={age}
-            onChange={handleChange}
-            autoWidth
-            label="Age"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Twenty</MenuItem>
-            <MenuItem value={21}>Twenty one</MenuItem>
-            <MenuItem value={22}>Twenty one and a half</MenuItem>
+        <FormControl sx={{ m: 1 }}>
+          <Select value={voice.name} onChange={handleChange} autoWidth>
+            {availableVoices.map((voice) => (
+              <MenuItem key={voice.name} value={voice.name}>
+                {`${voice.name} ${voice.lang}`}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>

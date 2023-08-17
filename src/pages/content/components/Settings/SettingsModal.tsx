@@ -6,10 +6,12 @@ import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import Loud from "./Loud";
 import Voice from "./Voice";
+import CustomSlider from "./CustomSlider";
 import FAQSuggestion from "./FAQSuggestion";
 import KeyboardShortcuts from "./KeyboardShortcuts";
+import { useContext } from "react";
+import { SettingsContext } from "../settingsConext";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -20,6 +22,8 @@ export default function SettingsModal({
   isOpen,
   handleClose,
 }: SettingsModalProps) {
+  const { volume, setVolume, rate, setRate } = useContext(SettingsContext);
+
   return (
     <Modal
       open={isOpen}
@@ -49,7 +53,22 @@ export default function SettingsModal({
             <StyledDivider />
           </Grid>
           <Grid item xs={6}>
-            <Loud />
+            <CustomSlider
+              title="Volume"
+              step={0.1}
+              min={0}
+              max={1}
+              currentValue={volume}
+              setValue={setVolume}
+            />
+            <CustomSlider
+              title="Rate"
+              step={0.1}
+              min={0.2}
+              max={2}
+              currentValue={rate}
+              setValue={setRate}
+            />
             <StyledDivider />
             <Voice />
           </Grid>

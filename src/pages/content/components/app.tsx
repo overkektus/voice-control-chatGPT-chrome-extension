@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, MouseEvent } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -16,14 +16,13 @@ import {
 import useKeyPress from "@src/hooks/useKeyPress";
 import useKeyHold from "@src/hooks/useKeyHold";
 import { SettingsContext } from "./settingsConext";
-import React from "react";
 
 export default function App() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { textContent } = useDynamicContentObserver(
+  const { textContent, skip } = useDynamicContentObserver(
     ".flex.flex-col.text-sm.dark\\:bg-gray-800",
     ".group.w-full.text-token-text-primary.border-b.border-black\\/10.dark\\:border-gray-900\\/50.bg-gray-50.dark\\:bg-\\[\\#444654\\]"
   );
@@ -32,8 +31,34 @@ export default function App() {
   const [sentences, setSentences] = useState<string[]>([]);
   const [sentencesSpeaked, setSentencesSpeaked] = useState<string[]>([]);
 
-  const { addToQueue, stopSpeak, setMuteState } = useTextToSpeech();
-  const { isSpeechOn } = useContext(SettingsContext);
+  const {
+    isSpeechOn,
+    language,
+    setAvailableVoices,
+    volume,
+    rate,
+    voice,
+    setVoice,
+  } = useContext(SettingsContext);
+  const { addToQueue, stopSpeak, setMuteState } = useTextToSpeech({
+    voice,
+    volume,
+    rate,
+  });
+
+  useEffect(() => {
+    const updateVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      setAvailableVoices(voices);
+      const defaultVoice = voices.find((voice) => voice.default === true);
+      setVoice(defaultVoice);
+    };
+    speechSynthesis.onvoiceschanged = updateVoices;
+    updateVoices();
+    return () => {
+      speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
 
   useEffect(() => {
     setMuteState(!isSpeechOn);
@@ -83,7 +108,7 @@ export default function App() {
     setIsListenFinish(false);
     setIsTranscriptForSend(true);
     SpeechRecognition.startListening({
-      language: "en-US",
+      language: language.value,
       continuous: true,
       interimResults: true,
     });
@@ -100,6 +125,11 @@ export default function App() {
     resetTranscript();
   };
 
+  const cancelSpeech = () => {
+    skip();
+    stopSpeak();
+  };
+
   const stopAndPasteTranscription = () => {
     if (!listening) return;
     setIsTranscriptForSend(false);
@@ -109,10 +139,11 @@ export default function App() {
   useKeyPress("KeyS", stopSpeak);
   useKeyPress("KeyE", stopAndPasteTranscription);
   useKeyPress("KeyQ", cancelListening);
+  useKeyPress("Esc", cancelListening);
   useKeyHold("Space", startListening, stopListening, 500);
 
   const handleStartButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement>
   ): void => {
     event.preventDefault();
     if (!listening) {
@@ -123,9 +154,9 @@ export default function App() {
   };
 
   return (
-    <div className="content-view flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
+    <div className="content-view mt-6 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
       <Button text={interimTranscript} onClick={handleStartButtonClick} />
-      <Menu handleOpenSettingsModal={handleOpen} />
+      <Menu handleOpenSettingsModal={handleOpen} handleSkip={cancelSpeech} />
       <SettingsModal isOpen={open} handleClose={handleClose} />
     </div>
   );
