@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface ObserverResult {
   textContent: string;
+  skip: () => void;
 }
 
 export const useDynamicContentObserver = (
@@ -10,6 +11,11 @@ export const useDynamicContentObserver = (
 ): ObserverResult => {
   const [textContent, setTextContent] = useState<string>("");
   const [element, setElement] = useState<Element | null>(null);
+  const [observer, setObserver] = useState<MutationObserver | null>(null);
+
+  const skip = () => {
+    observer.disconnect();
+  };
 
   useEffect(() => {
     if (!element) return;
@@ -28,6 +34,8 @@ export const useDynamicContentObserver = (
       subtree: true,
       characterData: true,
     };
+
+    setObserver(observer);
 
     observer.observe(element, config);
   }, [element]);
@@ -51,6 +59,7 @@ export const useDynamicContentObserver = (
               node.parentElement === targetParentNode &&
               node.matches(targetChildSelector)
             ) {
+              console.log("set");
               setElement(node);
             }
           });
@@ -71,7 +80,7 @@ export const useDynamicContentObserver = (
     };
   }, [targetParentSelector, targetChildSelector]);
 
-  return { textContent };
+  return { textContent, skip };
 };
 
 export default useDynamicContentObserver;
