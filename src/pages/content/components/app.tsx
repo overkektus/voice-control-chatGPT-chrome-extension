@@ -103,7 +103,6 @@ export default function App() {
   );
 
   const startListening = () => {
-    console.log("start listening");
     resetTranscript();
     setIsListenFinish(false);
     setIsTranscriptForSend(true);
@@ -115,12 +114,12 @@ export default function App() {
   };
 
   const stopListening = async () => {
-    console.log("stop listening");
     setIsListenFinish(true);
     await SpeechRecognition.stopListening();
   };
 
   const cancelListening = async () => {
+    if (!listening) return;
     await SpeechRecognition.abortListening();
     resetTranscript();
   };
@@ -158,7 +157,11 @@ export default function App() {
 
   return (
     <div className="content-view mt-6 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-      <Button text={interimTranscript} onClick={handleStartButtonClick} />
+      <Button
+        isListening={listening}
+        text={transcript}
+        onClick={handleStartButtonClick}
+      />
       <Menu handleOpenSettingsModal={handleOpen} handleSkip={cancelSpeech} />
       <SettingsModal isOpen={open} handleClose={handleClose} />
     </div>

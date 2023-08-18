@@ -59,7 +59,6 @@ export const useDynamicContentObserver = (
               node.parentElement === targetParentNode &&
               node.matches(targetChildSelector)
             ) {
-              console.log("set");
               setElement(node);
             }
           });
