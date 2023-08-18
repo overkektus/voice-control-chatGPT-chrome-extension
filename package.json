@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-boilerplate-react-vite",
-  "version": "0.0.1",
-  "description": "chrome extension boilerplate",
+  "name": "voice-control-chatgpt-chrome-extension",
+  "version": "1.0.0",
+  "description": "This new browser extension changes how you talk to ChatGPT. You can now have voice conversations with it easily. The extension makes it simple and smooth to chat with ChatGPT using your voice. It's a helpful tool to make your experience with advanced AI better. Try it now to upgrade your AI interactions!",
   "license": "MIT",
   "repository": {
     "type": "git",
