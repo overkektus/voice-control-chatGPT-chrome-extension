@@ -28,7 +28,7 @@ export default function CustomSlider({
 
   return (
     <div className="my-2">
-      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
+      <Typography fontSize="1.4rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         {title}: {currentValue}
       </Typography>
       <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">

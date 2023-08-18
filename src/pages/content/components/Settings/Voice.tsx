@@ -23,7 +23,7 @@ export default function Voice() {
 
   return (
     <>
-      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
+      <Typography fontSize="1.4rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         Voice
       </Typography>
       <Box

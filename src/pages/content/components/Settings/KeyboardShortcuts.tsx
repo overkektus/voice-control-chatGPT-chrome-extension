@@ -5,7 +5,7 @@ import emotion from "@emotion/styled";
 export default function KeyboardShortcuts() {
   return (
     <>
-      <Typography fontSize="1.2rem" variant="h3" sx={{ marginBottom: "1rem" }}>
+      <Typography fontSize="1.4rem" variant="h3" sx={{ marginBottom: "1rem" }}>
         Keyboard shortcuts
       </Typography>
       <TypographyInstruction>
@@ -25,7 +25,7 @@ export default function KeyboardShortcuts() {
 }
 
 const TypographyInstruction = styled(Typography)<TypographyProps>(() => ({
-  fontSize: "0.8rem",
+  fontSize: "1rem",
   margin: "15px 0",
 }));
 

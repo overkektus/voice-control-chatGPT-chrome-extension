@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Voice from "./Voice";
 import CustomSlider from "./CustomSlider";
-import FAQSuggestion from "./FAQSuggestion";
+// import FAQSuggestion from "./FAQSuggestion";
 import KeyboardShortcuts from "./KeyboardShortcuts";
 import { useContext } from "react";
 import { SettingsContext } from "../settingsConext";
@@ -74,8 +74,8 @@ export default function SettingsModal({
           </Grid>
           <Grid item xs={6}>
             <KeyboardShortcuts />
-            <StyledDivider />
-            <FAQSuggestion />
+            {/* <StyledDivider /> */}
+            {/* <FAQSuggestion /> */}
           </Grid>
         </Grid>
       </Box>
@@ -93,7 +93,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "60%",
+  width: "80%",
   bgcolor: "rgba(0, 0, 0, 0.7)",
   border: "2px solid #000",
   boxShadow: 24,
