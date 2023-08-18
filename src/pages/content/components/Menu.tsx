@@ -10,9 +10,13 @@ import { SettingsContext } from "./settingsConext";
 
 interface MenuProps {
   handleOpenSettingsModal: () => void;
+  handleSkip: () => void;
 }
 
-export default function Menu({ handleOpenSettingsModal }: MenuProps) {
+export default function Menu({
+  handleOpenSettingsModal,
+  handleSkip,
+}: MenuProps) {
   const { isSpeechOn, toggleSpeech } = React.useContext(SettingsContext);
   return (
     <Paper sx={{ padding: "0.5rem", height: "fit-content" }}>
@@ -23,7 +27,7 @@ export default function Menu({ handleOpenSettingsModal }: MenuProps) {
           aria-label="outlined primary button group"
           size="small"
         >
-          <IconButton>
+          <IconButton onClick={handleSkip}>
             <SkipNextIcon />
           </IconButton>
           <IconButton onClick={toggleSpeech}>

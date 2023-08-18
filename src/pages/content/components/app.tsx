@@ -127,6 +127,9 @@ export default function App() {
 
   const cancelSpeech = () => {
     skip();
+    setGPTAnswerText("");
+    setSentences([]);
+    setSentencesSpeaked([]);
     stopSpeak();
   };
 
